@@ -1,5 +1,5 @@
+
 import telebot
-from telebot import types
 import os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -31,29 +31,20 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    markup.add("💌 Написать")
     bot.send_message(
         message.chat.id,
-        "Приветствую!\n"
+        "Приветствую.\n"
         "Я AI-ассистент Кристианны.\n\n"
-        "Укажите, пожалуйста, свое имя и контакты.\n"
-        "Она обязательно свяжется с Вами в ближайшее время.",
-        reply_markup=markup
+        "Напишите, пожалуйста, Ваше имя и контакты\n"
+        "Она обязательно свяжется с Вами в ближайшее время 💖"
     )
 
 
-@bot.message_handler(func=lambda m: m.text == "💌 Написать")
-def ask_info(message):
-    bot.send_message(
-        message.chat.id,
-        "Напишите, пожалуйста, Ваше имя и контакты одним сообщением:",
-        reply_markup=types.ReplyKeyboardRemove()
-    )
-    bot.register_next_step_handler(message, finish)
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    if message.text.startswith('/'):
+        return
 
-
-def finish(message):
     text = (
         "🔔 <b>Новая заявка!</b>\n\n"
         f"💬 Сообщение: {message.text}\n"
@@ -61,14 +52,7 @@ def finish(message):
         f"🔗 Юзер: @{message.from_user.username or '—'}"
     )
     bot.send_message(ADMIN_ID, text, parse_mode="HTML")
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    markup.add("💌 Написать")
-    bot.send_message(
-        message.chat.id,
-        "Благодарю Вас! Ваша заявка отправлена.",
-        reply_markup=markup
-    )
+    bot.send_message(message.chat.id, "Благодарю Вас! Ваша заявка отправлена.")
 
 
 bot.infinity_polling()
