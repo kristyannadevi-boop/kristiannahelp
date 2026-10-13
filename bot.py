@@ -1,5 +1,6 @@
 
 import telebot
+from telebot import types
 import os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -36,7 +37,8 @@ def start(message):
         "Приветствую.\n"
         "Я AI-ассистент Кристианны.\n\n"
         "Напишите, пожалуйста, Ваше имя и контакты одной строкой\n"
-        "Она обязательно свяжется с Вами в ближайшее время 💖"
+        "Она обязательно свяжется с Вами в ближайшее время 💖",
+        reply_markup=types.ReplyKeyboardRemove()
     )
 
 
